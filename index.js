@@ -2,7 +2,8 @@
 import express from "express"; //"type":"module"  in package.json file
 import { MongoClient } from "mongodb";
 const app = express()
-const PORT=4000
+//const PORT=4000;
+const PORT=process.env.PORT
 const movie=[
     {
       id: 1,
