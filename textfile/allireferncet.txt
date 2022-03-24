@@ -112,7 +112,7 @@ app.post("/movie", async function (request, response) {
   // db.movies.insertMany(data)
   const data = request.body;
   console.log(data);
-  const result = await CreateMovie(data);
+  const result = await newFunction(data);
   response.send(result);
 });
 //cursor->pageination->convert to array to use (toArray)
