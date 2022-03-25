@@ -1,5 +1,5 @@
 import express from "express";
-import { Createuser } from "../helper.js";
+import { Createuser, getuserByName } from "../helper.js";
 import bcrypt from "bcrypt";
 const router = express.Router();
 
@@ -20,18 +20,14 @@ async function getPassword(password) {
 //   response.send(result);
 // });
 
-router.post("/signup", async function (request, response) {
-  // db.user.insertOne(data)
+router.post("/Login", async function (request, response) {
+  // db.user.findOne({username:"tamil"})
+  //
   const { username, password } = request.body;
-  const hashPassword = await getPassword(password);
-  console.log(hashPassword);
-  const newuser = {
-    username: username,
-    password: hashPassword,
-  };
-  console.log(newuser);
-  const result = await Createuser(newuser);
-  response.send(result);
+
+  const usernamefromDb = await getuserByName(username);
+  console.log(usernamefromDb);
+  response.send(usernamefromDb);
 });
 
 export const userRouter = router;

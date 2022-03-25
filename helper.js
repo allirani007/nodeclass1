@@ -17,3 +17,6 @@ export async function Updatemoviebyid() {
 export async function Createuser(data) {
   return await client.db("mydb").collection("User").insertOne(data);
 }
+export async function getuserByName(data) {
+  return await client.db("mydb").collection("User").find({ username: data });
+}
