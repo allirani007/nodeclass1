@@ -1,6 +1,7 @@
 import express from "express";
 import { Createuser, getuserByName } from "../helper.js";
 import bcrypt from "bcrypt";
+import { is } from "express/lib/request";
 const router = express.Router();
 
 async function getPassword(password) {
@@ -41,7 +42,14 @@ router.post("/Login", async function (request, response) {
 
   const usernamefromDb = await getuserByName(username);
   console.log(usernamefromDb);
-  response.send(usernamefromDb);
+  if (!usernamefromDb) {
+    response.status(401).send({ message: "Invalid credentials ⚡ " });
+  } else {
+    const storedPassword = usernamefromDb.password;
+    const isMatchpassword = await bcrypt.compare(password, storedPassword);
+    console.log("ismatchpassword :", isMatchpassword);
+    response.send(usernamefromDb);
+  }
 });
 
 export const userRouter = router;
