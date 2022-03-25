@@ -41,14 +41,18 @@ router.post("/Login", async function (request, response) {
   const { username, password } = request.body;
 
   const usernamefromDb = await getuserByName(username);
-  console.log(usernamefromDb);
+  console.log(usernamefromDb); //get data from database to check usernamefromDB will return username and password
   if (!usernamefromDb) {
     response.status(401).send({ message: "Invalid credentials ⚡ " });
   } else {
     const storedPassword = usernamefromDb.password;
     const isMatchpassword = await bcrypt.compare(password, storedPassword);
     console.log("ismatchpassword :", isMatchpassword);
-    response.send(usernamefromDb);
+    if (isMatchpassword) {
+      response.send({ Message: "Successful Login🙏🏻😋👍👍👍 " });
+    } else {
+      response.status(401).send({ message: "Invalid credentials ⚡ " });
+    }
   }
 });
 
