@@ -1,6 +1,8 @@
 //const express = require('express')   type:"commonjs"
 import express from "express"; //"type":"module"  in package.json file
 import { MongoClient } from "mongodb";
+import { movieRouter } from "./routes/movies.js";
+import { userRouter } from "./routes/user.js";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 dotenv.config();
@@ -97,7 +99,7 @@ async function createConnection() {
   console.log("Mongo is connected ✌️😊");
   return client;
 }
-const client = await createConnection();
+export const client = await createConnection();
 //const client = await createConnection();
 
 // app.get("/movies/:id", async function (request, response)
@@ -199,27 +201,6 @@ app.put("/movie/:id", async function (req, res) {
   const result = await Updatemoviebyid();
   res.send(result);
 });
-
+app.use("/movie", movieRouter);
+app.use("/user", userRouter);
 app.listen(PORT, () => console.log(`server started ${PORT}`));
-
-async function newFunction(data) {
-  return await client.db("mydb").collection("movies").insertMany(data);
-}
-
-async function DeleteAll() {
-  return await client.db("mydb").collection("movies").deleteMany({});
-}
-
-async function Updatemoviebyid() {
-  return await client
-    .db("mydb")
-    .collection("movies")
-    .updateOne({ id: id }, { $set: updatedata });
-}
-async function getPassword(password) {
-  //bcrypt.getSalt(Noofrounds)
-  const salt = await bcrypt.genSalt(10);
-  const hashPassword = await bcrypt.hash(password, salt);
-  console.log({ salt, hashPassword });
-}
-getPassword("password@234");
