@@ -2,10 +2,11 @@
 import express from "express"; //"type":"module"  in package.json file
 import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 dotenv.config();
 console.log(process.env.MONGO_URL);
 const app = express();
-const PORT=process.env.PORT
+const PORT = process.env.PORT;
 const movies = [
   {
     id: "100",
@@ -89,14 +90,14 @@ app.use(express.json());
 // });
 
 //const MONGO_URL = "mongodb://localhost";
-const MONGO_URL =process.env.MONGO_URL
+const MONGO_URL = process.env.MONGO_URL;
 async function createConnection() {
   const client = new MongoClient(MONGO_URL);
   await client.connect();
   console.log("Mongo is connected ✌️😊");
   return client;
 }
-const client=await createConnection();
+const client = await createConnection();
 //const client = await createConnection();
 
 // app.get("/movies/:id", async function (request, response)
@@ -189,7 +190,6 @@ app.delete("/movie/", async function (req, res) {
   res.send(result);
 });
 
-
 app.put("/movie/:id", async function (req, res) {
   console.log(req.params);
   //db.movie.updateOne({id:id}{$set:updatedata})
@@ -198,22 +198,16 @@ app.put("/movie/:id", async function (req, res) {
   // const movie1 = movies.find((mv) => mv.id === id);
   const result = await Updatemoviebyid();
   res.send(result);
-
-  
 });
 
 app.listen(PORT, () => console.log(`server started ${PORT}`));
-
 
 async function newFunction(data) {
   return await client.db("mydb").collection("movies").insertMany(data);
 }
 
 async function DeleteAll() {
-  return await client
-    .db("mydb")
-    .collection("movies")
-    .deleteMany({});
+  return await client.db("mydb").collection("movies").deleteMany({});
 }
 
 async function Updatemoviebyid() {
@@ -222,3 +216,10 @@ async function Updatemoviebyid() {
     .collection("movies")
     .updateOne({ id: id }, { $set: updatedata });
 }
+async function getPassword(password) {
+  //bcrypt.getSalt(Noofrounds)
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = await bcrypt.hash(password, salt);
+  console.log({ salt, hashPassword });
+}
+getPassword("password@234");
