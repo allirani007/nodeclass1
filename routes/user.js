@@ -20,6 +20,20 @@ async function getPassword(password) {
 //   response.send(result);
 // });
 
+router.post("/signup", async function (request, response) {
+  // db.user.insertOne(data)
+  const { username, password } = request.body;
+  const hashPassword = await getPassword(password);
+  const newuser = {
+    username: username,
+    password: hashPassword,
+  };
+  console.log(hashPassword);
+  console.log(newuser);
+  const result = await Createuser(newuser);
+  response.send(result);
+});
+
 router.post("/Login", async function (request, response) {
   // db.user.findOne({username:"tamil"})
   //
