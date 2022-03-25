@@ -1,7 +1,7 @@
 import express from "express";
 import { Createuser, getuserByName } from "../helper.js";
 import bcrypt from "bcrypt";
-import { is } from "express/lib/request";
+
 const router = express.Router();
 
 async function getPassword(password) {
