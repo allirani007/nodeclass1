@@ -176,7 +176,7 @@ app.get("/movie/:id", async function (req, res) {
     : res.status(404).send({ Message: "No Such data Found 😋" });
 });
 
-app.get("/movie", auth, async function (request, response) {
+app.get("/movie", async function (request, response) {
   // db.movies.finOne();
   //const { id } = request.params;
 
