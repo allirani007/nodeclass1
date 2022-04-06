@@ -147,7 +147,7 @@ export const client = await createConnection();
 // createConnection();
 
 app.get("/", function (req, res) {
-  res.send("hello world 🎉✨🧨🎇");
+  res.send("hello world 🎉🌹❤❤🤣💖💋✨🧨🎇");
 });
 // app.get("/movie1", function (req, res) {
 //   res.send(movies);
