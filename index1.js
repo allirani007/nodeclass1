@@ -5,6 +5,9 @@ import { movieRouter } from "./routes/movies.js";
 import { userRouter } from "./routes/user.js";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import { ObjectId } from "mongodb";
+import cors from "cors";
+import { auth } from "./middleware/auth.js";
 dotenv.config();
 console.log(process.env.MONGO_URL);
 const app = express();
@@ -79,7 +82,9 @@ const movies = [
     trailer: "https://www.youtube.com/embed/NgsQ8mVkN8w",
   },
 ];
-app.use(express.json());
+
+app.use(cors()); // it is a third party middleware
+app.use(express.json()); // inbuild middleware from express
 
 // mongocloud-Reg
 // const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -111,21 +116,21 @@ export const client = await createConnection();
 //         response.send(result);
 //      });
 
-app.post("/movie", async function (request, response) {
-  // db.movies.insertMany(data)
-  const data = request.body;
-  console.log(data);
-  const result = await CreateMovie(data);
-  response.send(result);
-});
+// app.post("/movie", async function (request, response) {
+//   // db.movies.insertMany(data)
+//   const data = request.body;
+//   console.log(data);
+//   const result = await CreateMovie(data);
+//   response.send(result);
+// });
 //cursor->pageination->convert to array to use (toArray)
-app.get("/movie", async function (request, response) {
-  // db.movies.finOne();
-  //const { id } = request.params;
+// app.get("/movie", async function (request, response) {
+//   // db.movies.finOne();
+//   //const { id } = request.params;
 
-  const result = await client.db("mydb").collection("movies").find().toArray();
-  response.send(result);
-});
+//   const result = await ListMovie();
+//   response.send(result);
+// });
 
 // const MONGO_URL="mongodb://localhost";
 // async function createconnection(){
@@ -160,15 +165,23 @@ app.get("/movie/:id", async function (req, res) {
   console.log(req.params);
   // filter | find
   const { id } = req.params;
-  const movie1 = movies.find((mv) => mv.id === id);
+  //const movie1 = movies.find((mv) => mv.id === id);
   const result = await client
     .db("mydb")
     .collection("movies")
-    .findOne({ id: id });
+    .findOne({ _id: ObjectId(id) });
   console.log(result);
   result
     ? res.send(result)
     : res.status(404).send({ Message: "No Such data Found 😋" });
+});
+
+app.get("/movie", auth, async function (request, response) {
+  // db.movies.finOne();
+  //const { id } = request.params;
+
+  const result = await client.db("mydb").collection("movies").find().toArray();
+  response.send(result);
 });
 
 app.delete("/movie/:id", async function (req, res) {
@@ -183,24 +196,24 @@ app.delete("/movie/:id", async function (req, res) {
   res.send(result);
 });
 
-app.delete("/movie/", async function (req, res) {
-  //console.log(req.params);
-  // filter | find
-  //const { id } = req.params;
-  // const movie1 = movies.find((mv) => mv.id === id);
-  const result = await DeleteAll();
-  res.send(result);
-});
+// app.delete("/movie/", async function (req, res) {
+//   //console.log(req.params);
+//   // filter | find
+//   //const { id } = req.params;
+//   // const movie1 = movies.find((mv) => mv.id === id);
+//   const result = await DeleteAll();
+//   res.send(result);
+// });
 
-app.put("/movie/:id", async function (req, res) {
-  console.log(req.params);
-  //db.movie.updateOne({id:id}{$set:updatedata})
-  const { id } = req.params;
-  const updatedata = req.body;
-  // const movie1 = movies.find((mv) => mv.id === id);
-  const result = await Updatemoviebyid();
-  res.send(result);
-});
+// app.put("/movie/:id", async function (req, res) {
+//   console.log(req.params);
+//   //db.movie.updateOne({id:id}{$set:updatedata})
+//   const { id } = req.params;
+//   const updatedata = req.body;
+//   // const movie1 = movies.find((mv) => mv.id === id);
+//   const result = await Updatemoviebyid();
+//   res.send(result);
+// });
 app.use("/movie", movieRouter);
 app.use("/user", userRouter);
 app.listen(PORT, () => console.log(`server started ${PORT}`));

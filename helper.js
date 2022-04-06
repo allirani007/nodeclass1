@@ -1,4 +1,5 @@
 import { client } from "./index1.js";
+
 export async function CreateMovie(data) {
   return await client.db("mydb").collection("movies").insertMany(data);
 }
@@ -20,3 +21,6 @@ export async function Createuser(data) {
 export async function getuserByName(data) {
   return await client.db("mydb").collection("User").findOne({ username: data });
 }
+// export async function ListMovie() {
+//   return await client.db("mydb").collection("movies").find().toArray();
+// }

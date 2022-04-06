@@ -1,6 +1,7 @@
 import express from "express";
 import { Createuser, getuserByName } from "../helper.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -49,7 +50,8 @@ router.post("/Login", async function (request, response) {
     const isMatchpassword = await bcrypt.compare(password, storedPassword);
     console.log("ismatchpassword :", isMatchpassword);
     if (isMatchpassword) {
-      response.send({ Message: "Successful Login🙏🏻😋👍👍👍 " });
+      const token = jwt.sign({ id: usernamefromDb._id }, process.env.mySecret);
+      response.send({ Message: "Successful Login🙏🏻😋👍👍👍 ", token: token });
     } else {
       response.status(401).send({ message: "Invalid credentials ⚡ " });
     }
